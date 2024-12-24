@@ -1,12 +1,12 @@
 import { db } from '../config.js';
-import { collection, addDoc, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
 const menuService = {
   // Add a new menu item
   async addMenuItem(item) {
     try {
       // Validate required fields
-      if (!item.name || !item.price || !item.description || !item.spiceLevel) {
+      if (!item.name || !item.price || !item.description || !item.spiceLevel || !item.image) {
         throw new Error('Missing required fields');
       }
 
@@ -15,6 +15,7 @@ const menuService = {
         price: item.price,
         description: item.description,
         spiceLevel: item.spiceLevel,
+        image: item.image,
         // Optional fields
         categories: item.categories ? 
           (Array.isArray(item.categories) ? item.categories : [item.categories]) 

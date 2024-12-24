@@ -9,6 +9,7 @@ async function testAddMenuItems() {
         price: 14.99,
         description: "Creamy, rich Indian curry with tender chicken",
         spiceLevel: "Medium",
+        image: "https://res.cloudinary.com/dj8jqzpry/image/upload/v1709594051/butter-chicken_kqd9s1.jpg",
         categories: ["Main Course", "Curry", "Popular"],
         discountPrice: 12.99
       },
@@ -17,6 +18,7 @@ async function testAddMenuItems() {
         price: 3.99,
         description: "Traditional Indian bread",
         spiceLevel: "None",
+        image: "https://res.cloudinary.com/dj8jqzpry/image/upload/v1709594051/plain-naan_f8sxqc.jpg",
         categories: ["Bread"]
       },
       {
@@ -24,6 +26,7 @@ async function testAddMenuItems() {
         price: 15.99,
         description: "Spicy curry with potatoes",
         spiceLevel: "Hot",
+        image: "https://res.cloudinary.com/dj8jqzpry/image/upload/v1709594051/vindaloo_kzcpel.jpg",
         discountPrice: 13.99
       }
     ];

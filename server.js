@@ -37,6 +37,15 @@ app.put('/api/menu/:id', async (req, res) => {
   }
 });
 
+app.delete('/api/menu/:id', async (req, res) => {
+  try {
+    await menuService.deleteMenuItem(req.params.id);
+    res.json({ message: 'Menu item deleted successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
