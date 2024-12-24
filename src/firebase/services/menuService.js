@@ -6,21 +6,21 @@ const menuService = {
   async addMenuItem(item) {
     try {
       // Validate required fields
-      if (!item.name || !item.price || !item.description || !item.spiceLevel || !item.image) {
+      if (!item.name || !item.price || !item.description || !item.image || item.spiceLevel === undefined) {
         throw new Error('Missing required fields');
       }
 
       const processedItem = {
         name: item.name,
-        price: item.price,
+        price: Number(item.price),
         description: item.description,
-        spiceLevel: item.spiceLevel,
+        spiceLevel: item.spiceLevel, // Accept any value including 0
         image: item.image,
         // Optional fields
         categories: item.categories ? 
-          (Array.isArray(item.categories) ? item.categories : [item.categories]) 
-          : undefined,
-        discountPrice: item.discountPrice || undefined
+          (Array.isArray(item.categories) ? item.categories : item.categories.split(',').map(cat => cat.trim())) 
+          : [],
+        discountPrice: item.discountPrice ? Number(item.discountPrice) : undefined
       };
 
       // Remove undefined optional fields
