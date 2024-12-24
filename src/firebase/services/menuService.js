@@ -1,6 +1,14 @@
 import { db } from '../config.js';
 import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
+const CATEGORY_PRIORITY = {
+  'main': 1,
+  'side': 2,
+  'beverage': 3,
+  // Default priority for items without these categories
+  'default': 999
+};
+
 const menuService = {
   // Add a new menu item
   async addMenuItem(item) {
@@ -41,10 +49,21 @@ const menuService = {
     try {
       const menuCollection = collection(db, 'menu');
       const snapshot = await getDocs(menuCollection);
-      return snapshot.docs.map(doc => ({
+      const items = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+
+      // Sort items based on category priority
+      return items.sort((a, b) => {
+        const aPriority = Math.min(...(a.categories || []).map(cat => 
+          CATEGORY_PRIORITY[cat] || CATEGORY_PRIORITY.default
+        ));
+        const bPriority = Math.min(...(b.categories || []).map(cat => 
+          CATEGORY_PRIORITY[cat] || CATEGORY_PRIORITY.default
+        ));
+        return aPriority - bPriority;
+      });
     } catch (error) {
       throw new Error(`Error getting menu items: ${error}`);
     }
