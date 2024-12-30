@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import menuService from './src/firebase/services/menuService.js';
+import newsletterService from './src/firebase/services/newsletterService.js';
+import userService from './src/firebase/services/userService.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -43,6 +45,121 @@ app.delete('/api/menu/:id', async (req, res) => {
     res.json({ message: 'Menu item deleted successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/api/newsletter', async (req, res) => {
+  try {
+    const posts = await newsletterService.getAllPosts();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/newsletter', async (req, res) => {
+  try {
+    const newPost = await newsletterService.addPost(req.body);
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.put('/api/newsletter/:id', async (req, res) => {
+  try {
+    const updatedPost = await newsletterService.updatePost(req.params.id, req.body);
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/newsletter/:id', async (req, res) => {
+  try {
+    await newsletterService.deletePost(req.params.id);
+    res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// User routes
+app.post('/api/users/register', async (req, res) => {
+  try {
+    const newUser = await userService.registerUser(req.body);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/users/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userService.loginUser(email, password);
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+});
+
+app.post('/api/users/logout', async (req, res) => {
+  try {
+    await userService.logoutUser();
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/users/current', async (req, res) => {
+  try {
+    const user = await userService.getCurrentUser();
+    if (!user) {
+      res.status(401).json({ error: 'Not authenticated' });
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const updatedUser = await userService.updateUser(req.params.id, req.body);
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/users/:id/loyalty-points', async (req, res) => {
+  try {
+    const { points } = req.body;
+    if (points === undefined) {
+      res.status(400).json({ error: 'Points value is required' });
+      return;
+    }
+    
+    const result = await userService.updateLoyaltyPoints(req.params.id, points);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/api/users/:id/loyalty-points', async (req, res) => {
+  try {
+    const user = await userService.getCurrentUser();
+    if (!user) {
+      res.status(401).json({ error: 'Not authenticated' });
+      return;
+    }
+    res.json({ loyaltyPoints: user.loyaltyPoints });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node src/tests/menuTest.js"
+    "test": "node src/tests/menuTest.js",
+    "test:newsletter": "node src/tests/newsletterTest.js",
+    "test:users": "node src/tests/userTest.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
