@@ -3,7 +3,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
   signOut,
-  updateProfile
+  updateProfile,
+  deleteUser as deleteAuthUser
 } from 'firebase/auth';
 import { 
   collection, 
@@ -132,9 +133,15 @@ const userService = {
 
   async deleteUser(uid) {
     try {
+      // Delete from Firestore
       await deleteDoc(doc(db, 'users', uid));
-      // Note: This only deletes the Firestore document
-      // You might want to also delete the Auth user
+      
+      // Delete from Firebase Auth
+      const user = auth.currentUser;
+      if (user && user.uid === uid) {
+        await user.delete();
+      }
+      
       return uid;
     } catch (error) {
       throw new Error(`Error deleting user: ${error.message}`);
