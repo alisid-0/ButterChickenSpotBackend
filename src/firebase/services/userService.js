@@ -47,7 +47,7 @@ const userService = {
       await setDoc(doc(db, 'users', userCredential.user.uid), userDoc);
       
       const { password, ...userWithoutPassword } = userData;
-      return { ...userWithoutPassword, uid: userCredential.user.uid, loyaltyPoints: 0 };
+      return { ...userWithoutPassword, uid: userCredential.user.uid, loyaltyPoints: 0, role: 'customer' };
     } catch (error) {
       throw new Error(`Error registering user: ${error.message}`);
     }
