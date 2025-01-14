@@ -4,12 +4,11 @@ import { collection, addDoc, getDocs, updateDoc, doc, getDoc, query, where, orde
 const orderService = {
   async createOrder(orderData) {
     try {
-      if (!orderData.userId || !orderData.items || !orderData.total) {
+      if (!orderData.items || !orderData.total) {
         throw new Error('Missing required fields');
       }
 
       const processedOrder = {
-        userId: orderData.userId,
         items: orderData.items,
         total: Number(orderData.total),
         status: 'pending',
@@ -17,9 +16,13 @@ const orderService = {
         updatedAt: new Date().toISOString(),
         specialInstructions: orderData.specialInstructions || '',
         contactNumber: orderData.contactNumber || '',
-        paymentMethod: orderData.paymentMethod || 'cash',
-        pointsEarned: Math.floor(orderData.total)  // 1 point per dollar
+        paymentMethod: orderData.paymentMethod || 'cash'
       };
+
+      if (orderData.userId) {
+        processedOrder.userId = orderData.userId;
+        processedOrder.pointsEarned = Math.floor(orderData.total);
+      }
 
       const orderCollection = collection(db, 'orders');
       const docRef = await addDoc(orderCollection, processedOrder);
