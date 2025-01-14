@@ -3,6 +3,7 @@ import cors from 'cors';
 import menuService from './src/firebase/services/menuService.js';
 import newsletterService from './src/firebase/services/newsletterService.js';
 import userService from './src/firebase/services/userService.js';
+import orderService from './src/firebase/services/orderService.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -160,6 +161,43 @@ app.get('/api/users/:id/loyalty-points', async (req, res) => {
     res.json({ loyaltyPoints: user.loyaltyPoints });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Order routes
+app.post('/api/orders', async (req, res) => {
+  try {
+    const newOrder = await orderService.createOrder(req.body);
+    res.status(201).json(newOrder);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await orderService.getOrder(req.params.id);
+    res.json(order);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+app.get('/api/orders/user/:userId', async (req, res) => {
+  try {
+    const orders = await orderService.getUserOrders(req.params.userId);
+    res.json(orders);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.put('/api/orders/:id/status', async (req, res) => {
+  try {
+    const updatedOrder = await orderService.updateOrderStatus(req.params.id, req.body.status);
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
