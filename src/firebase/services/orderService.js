@@ -1,5 +1,6 @@
 import { db } from '../config.js';
 import { collection, addDoc, getDocs, updateDoc, doc, getDoc, query, where, orderBy } from 'firebase/firestore';
+import { getCSTTimestamp } from '../../utils/dateUtils.js';
 
 const orderService = {
   async createOrder(orderData) {
@@ -12,8 +13,8 @@ const orderService = {
         items: orderData.items,
         total: Number(orderData.total),
         status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: getCSTTimestamp(),
+        updatedAt: getCSTTimestamp(),
         specialInstructions: orderData.specialInstructions || '',
         contactNumber: orderData.contactNumber || '',
         paymentMethod: orderData.paymentMethod || 'cash'

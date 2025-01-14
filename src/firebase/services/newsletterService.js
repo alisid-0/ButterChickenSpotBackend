@@ -1,6 +1,7 @@
 import { db, storage } from '../config.js';
 import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getCSTTimestamp } from '../../utils/dateUtils.js';
 
 const newsletterService = {
   async addPost(post) {
@@ -21,7 +22,7 @@ const newsletterService = {
         title: post.title,
         content: post.content,
         author: post.author,
-        publishDate: new Date().toISOString(),
+        publishDate: getCSTTimestamp(),
         image: imageUrl
       };
 

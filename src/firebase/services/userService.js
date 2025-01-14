@@ -14,6 +14,7 @@ import {
   updateDoc, 
   deleteDoc 
 } from 'firebase/firestore';
+import { getCSTTimestamp } from '../../utils/dateUtils.js';
 
 const userService = {
   async registerUser(userData) {
@@ -86,7 +87,7 @@ const userService = {
           lastName: userCredential.user.displayName.split(' ')[1],
           email: userCredential.user.email,
           loyaltyPoints: 0,
-          createdAt: new Date().toISOString(),
+          createdAt: getCSTTimestamp(),
           role: 'customer'
         };
         await setDoc(userDocRef, newUserDoc);
